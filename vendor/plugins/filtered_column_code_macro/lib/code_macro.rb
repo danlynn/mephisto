@@ -1,5 +1,20 @@
 require 'coderay'
+
 class CodeMacro < FilteredColumn::Macros::Base
+  
+  JAVASCRIPT = <<-EOS
+<script type="text/javascript" charset="utf-8">
+if (!document.codeMacroJsAlreadyLoaded) {
+	document.codeMacroJsAlreadyLoaded = true;
+	var headID = document.getElementsByTagName("head")[0];
+	var newScript = document.createElement('script');
+	newScript.type = 'text/javascript';
+	newScript.src = document.location.protocol + "//" + document.location.hostname + ":" + document.location.port + "/plugin_assets/filtered_column_code_macro/codemacro.js";
+	headID.appendChild(newScript);
+}
+</script>
+EOS
+  
   DEFAULT_OPTIONS = {:wrap => :div, :line_numbers => :table, :tab_width => 2, :bold_every => 5, :hint => false, :line_number_start => 1}
   def self.filter(attributes, inner_text = '', text = '')
     # It's a whole lot easier to just set your attributes statically
@@ -23,18 +38,20 @@ class CodeMacro < FilteredColumn::Macros::Base
     options[:line_number_start] = attributes[:line_number_start].to_i unless attributes[:line_number_start].blank?
 
     inner_text = inner_text.gsub(/\A\r?\n/, '').chomp
-
+    html = ""
+    
     begin
-      CodeRay.scan(inner_text, lang.to_sym).html(options)
+      html = CodeRay.scan(inner_text, lang.to_sym).html(options)
     rescue ArgumentError
-      CodeRay.scan(inner_text, lang.to_sym).html(DEFAULT_OPTIONS)
+      html = CodeRay.scan(inner_text, lang.to_sym).html(DEFAULT_OPTIONS)
     rescue
       unless lang.blank?
         RAILS_DEFAULT_LOGGER.warn "CodeRay Error: #{$!.message}"
         RAILS_DEFAULT_LOGGER.debug $!.backtrace.join("\n")
       end
-      "<pre><code>#{CGI.escapeHTML(inner_text)}</code></pre>"
+      html = "<pre><code>#{CGI.escapeHTML(inner_text)}</code></pre>"
     end
+    "<div class=\"CodeMacro\">\n#{html}\n</div>\n#{JAVASCRIPT}"
   end
 end
 
