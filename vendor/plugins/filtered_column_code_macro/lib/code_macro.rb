@@ -51,7 +51,7 @@ EOS
       end
       html = "<pre><code>#{CGI.escapeHTML(inner_text)}</code></pre>"
     end
-    "<div class=\"CodeMacro\">\n#{html}\n</div>\n#{JAVASCRIPT}"
+    "<div class=\"CodeMacro\">\n#{html}</div>\n#{JAVASCRIPT}"
   end
 end
 
