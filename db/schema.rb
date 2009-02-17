@@ -147,6 +147,11 @@ ActiveRecord::Schema.define(:version => 20081223221228) do
     t.string "type"
   end
 
+  create_table "plugin_schema_info", :id => false, :force => true do |t|
+    t.string  "plugin_name"
+    t.integer "version"
+  end
+
   create_table "sections", :force => true do |t|
     t.string  "name"
     t.boolean "show_paged_articles", :default => false
