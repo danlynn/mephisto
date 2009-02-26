@@ -1,6 +1,7 @@
-# Run this rake file by navigating to the 'vendor/plugins/filtered_column_code_macro'
-# directory on the command line and run "rake" to generate a new 'default_coderay.css'
-# or by running "rake test" to execute the unit tests.
+# Run this rake file by navigating to the
+# 'vendor/plugins/filtered_column_code_macro' directory on the command line
+# and run "rake" to generate a new 'default_coderay.css' or by running
+# "rake test" to execute the unit tests.
 require 'rake'
 require 'rake/testtask'
 require 'pathname'
@@ -10,8 +11,7 @@ require 'pathname'
 $: << Pathname.glob(Pathname(__FILE__).parent.parent.parent + 'gems' + 'coderay*' + 'lib').to_s
 require 'coderay'
 
-desc 'Default: generate default_coderay.css'
-task :default => :generate_default_coderay_stylesheet
+task :default => :test
 
 # This task is useful to generate a new default CodeRay stylesheet after 
 # updating the coderay gem in 'vendor/gems' to insure that the 
