@@ -60,6 +60,7 @@ module RedArtisan
     class Processor
   
       def initialize(original)
+				puts "*** RedArtisan::CoreImage::Processor#initialize()"
         if original.respond_to? :to_str
           @original = OSX::CIImage.from(original.to_str)
         else
@@ -68,6 +69,7 @@ module RedArtisan
       end
   
       def render(&block)
+				puts "*** RedArtisan::CoreImage::Processor#render()"
         raise "unprocessed image: #{@original}" unless @target
         block.call @target
       end
@@ -77,6 +79,7 @@ module RedArtisan
       private
   
         def create_core_image_context(width, height)
+					puts "*** RedArtisan::CoreImage::Processor#create_core_image_context()"
       		output = OSX::NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh_bitsPerSample_samplesPerPixel_hasAlpha_isPlanar_colorSpaceName_bytesPerRow_bitsPerPixel(nil, width, height, 8, 4, true, false, OSX::NSDeviceRGBColorSpace, 0, 0)
       		context = OSX::NSGraphicsContext.graphicsContextWithBitmapImageRep(output)
       		OSX::NSGraphicsContext.setCurrentContext(context)
@@ -84,6 +87,7 @@ module RedArtisan
         end
         
         def vector(x, y, w, h)
+					puts "*** RedArtisan::CoreImage::Processor#vector()"
           OSX::CIVector.vectorWithX_Y_Z_W(x, y, w, h)
         end
     end
@@ -95,6 +99,7 @@ module OSX
     include OCObjWrapper
   
     def method_missing_with_filter_processing(sym, *args, &block)
+			puts "*** RedArtisan::CoreImage::Processor#method_missing_with_filter_processing()"
       f = OSX::CIFilter.filterWithName("CI#{sym.to_s.camelize}")
       return method_missing_without_filter_processing(sym, *args, &block) unless f
     
@@ -109,12 +114,14 @@ module OSX
     alias_method_chain :method_missing, :filter_processing
       
     def save(target, format = OSX::NSJPEGFileType, properties = nil)
+			puts "*** RedArtisan::CoreImage::Processor#save()"
       bitmapRep = OSX::NSBitmapImageRep.alloc.initWithCIImage(self)
       blob = bitmapRep.representationUsingType_properties(format, properties)
       blob.writeToFile_atomically(target, false)
     end
   
     def self.from(filepath)
+			puts "*** RedArtisan::CoreImage::Processor.from()"
       raise Errno::ENOENT, "No such file or directory - #{filepath}" unless File.exists?(filepath)
       OSX::CIImage.imageWithContentsOfURL(OSX::NSURL.fileURLWithPath(filepath))
     end
