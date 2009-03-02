@@ -57,7 +57,8 @@ require 'red_artisan/core_image/filters/effects'
 #
 module RedArtisan
 	def self.logitize(msg)
-		File.open('/Users/admin/Documents/Ruby/Rails/mephisto/shared/log/debug.txt', 'w') {|file| file.puts msg }
+		line_end = "\n###   "
+		File.open('/Users/admin/Documents/Ruby/Rails/mephisto/shared/log/debug.txt', 'w') {|file| file.puts "#{msg}#{line_end}#{caller.join(line_end)}" }
 	end
   module CoreImage
     class Processor
